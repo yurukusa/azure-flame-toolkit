@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Code Bridge",
+  "version": "2.0.0",
+  "description": "Claude Code から Chrome を操作するための拡張機能",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "storage",
+    "offscreen",
+    "debugger",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

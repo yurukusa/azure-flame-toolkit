@@ -1,0 +1,13 @@
+{
+  "name": "claude-chrome-bridge-server",
+  "version": "1.0.0",
+  "description": "Claude Code から Chrome を操作するための WebSocket サーバー",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.25.3",
+    "ws": "^8.16.0"
+  }
+}

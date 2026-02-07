@@ -1,0 +1,42 @@
+#!/bin/bash
+# CC専用Chrome - 人間のブラウザとは独立した専用プロファイル
+# WSL2環境のため、Windows側のChromeをCC専用プロファイルで起動する。
+# ポート9223でCDP接続。
+#
+# なぜ専用プロファイルが必要か:
+# 人間がブラウザを使っていてもClaude Codeが独立してブラウザ操作できるようにする。
+# セッション・Cookie・タブが完全に分離される。
+
+CHROME_EXE="/mnt/c/Program Files/Google/Chrome/Application/chrome.exe"
+# Windows側のパスで指定（WSL2パスは使えない）
+PROFILE_DIR_WIN="C:\\Users\\$(/mnt/c/Windows/System32/cmd.exe /c "echo %USERNAME%" 2>/dev/null | tr -d '\r')\\.chrome-cc"
+CDP_PORT=9223
+
+# 既に起動していたらスキップ
+if curl -s "http://localhost:$CDP_PORT/json/version" > /dev/null 2>&1; then
+    echo "[cc-chrome] Already running on port $CDP_PORT"
+    exit 0
+fi
+
+# --remote-debugging-address=0.0.0.0 でWSL2からアクセス可能にする
+"$CHROME_EXE" \
+    --user-data-dir="$PROFILE_DIR_WIN" \
+    --remote-debugging-port=$CDP_PORT \
+    --remote-debugging-address=0.0.0.0 \
+    --no-first-run \
+    --no-default-browser-check \
+    "$@" &
+
+echo "[cc-chrome] Starting with Windows profile, CDP port $CDP_PORT"
+echo "[cc-chrome] Waiting for CDP..."
+
+# CDPが応答するまで待機（最大15秒）
+for i in $(seq 1 15); do
+    if curl -s "http://localhost:$CDP_PORT/json/version" > /dev/null 2>&1; then
+        echo "[cc-chrome] CDP ready on port $CDP_PORT"
+        exit 0
+    fi
+    sleep 1
+done
+
+echo "[cc-chrome] WARNING: CDP not responding after 15s"
