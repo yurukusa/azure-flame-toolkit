@@ -60,6 +60,13 @@
     <p>WebSocket サーバーに接続して<br>Claude Code から操作できます。</p>
     <p>サーバー: <code>ws://localhost:8765</code></p>
   </div>
+
+  <div class="info">
+    <p><strong>接続先（任意）</strong></p>
+    <input id="wsUrl" type="text" placeholder="ws://host:port" style="width: 100%; box-sizing: border-box; padding: 6px; font-size: 12px;">
+    <button id="saveWsUrl" style="margin-top: 8px; width: 100%; padding: 6px; font-size: 12px;">保存</button>
+    <p style="margin-top: 6px;">空欄なら既定値を使用します。</p>
+  </div>
   <script src="popup.js"></script>
 </body>
 </html>

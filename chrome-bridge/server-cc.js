@@ -14,19 +14,23 @@
 const WebSocket = require('ws');
 const http = require('http');
 
-const PORT = 8766;
-const CDP_PORT = 9223;
-const HOST = '0.0.0.0';
+const PORT = parseInt(process.env.CC_BRIDGE_PORT || '8766');
+const CDP_PORT = parseInt(process.env.CDP_PORT || '9223');
+// 0.0.0.0: WSL2環境でWindows側からの接続を受け付けるために必要
+const HOST = process.env.HOST || '0.0.0.0';
+// WSL2からWindows側Chromeへアクセスする際のホスト
+// WSL2環境では Windows の IP アドレスを指定する必要がある（.envで設定）
+const WINDOWS_HOST = process.env.WINDOWS_HOST || 'localhost';
 
 const wss = new WebSocket.Server({ host: HOST, port: PORT });
 
 console.log(`[CC-Server] WebSocket サーバー起動: ws://localhost:${PORT}`);
-console.log(`[CC-Server] CDP接続先: http://localhost:${CDP_PORT}`);
+console.log(`[CC-Server] CDP接続先: http://${WINDOWS_HOST}:${CDP_PORT}`);
 
 // CDP WebSocket接続を取得
 async function getCDPTarget() {
     return new Promise((resolve, reject) => {
-        const req = http.get(`http://localhost:${CDP_PORT}/json`, (res) => {
+        const req = http.get(`http://${WINDOWS_HOST}:${CDP_PORT}/json`, (res) => {
             let data = '';
             res.on('data', chunk => data += chunk);
             res.on('end', () => {

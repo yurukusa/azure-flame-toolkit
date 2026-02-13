@@ -316,6 +316,14 @@ This project was built for the [Built with Opus 4.6: a Claude Code hackathon](ht
 
 ---
 
+## Security Notes
+
+- **Network binding**: Servers bind to `0.0.0.0` by default (required for WSL2 → Windows communication). On shared networks, set `HOST=127.0.0.1` in `.env` or use a firewall.
+- **No authentication**: WebSocket connections are unauthenticated. Only run on trusted networks.
+- **CDP access**: `--remote-debugging-port` gives full browser control. Never expose CDP ports to untrusted networks.
+- **`--dangerously-skip-permissions`**: claude-watch disables Claude Code's safety prompts for autonomous execution. Ensure your `instructions.md` comes from a trusted source.
+- **Environment-specific config**: Copy `chrome-bridge/.env.example` to `chrome-bridge/.env` for your setup. `.env` is gitignored.
+
 ## License
 
 MIT

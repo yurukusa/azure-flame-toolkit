@@ -15,8 +15,10 @@
 
 const WebSocket = require('ws');
 
-const PORT = 8765;
-const HOST = '0.0.0.0';
+const PORT = parseInt(process.env.BRIDGE_PORT || '8765');
+// 0.0.0.0: WSL2環境でWindows側からの接続を受け付けるために必要
+// セキュリティが気になる場合は HOST=127.0.0.1 を.envに設定
+const HOST = process.env.HOST || '0.0.0.0';
 const wss = new WebSocket.Server({ host: HOST, port: PORT });
 
 let chromeExtension = null;
